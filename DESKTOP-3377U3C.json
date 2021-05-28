@@ -1,0 +1,44 @@
+{
+    "Hostname":  "DESKTOP-3377U3C",
+    "Bios_info":  {
+                      "BiosManufacturer":  "LENOVO",
+                      "BiosVersion":  "Phoenix BIOS SC-T v2.2",
+                      "SMBIOSBIOSVersion":  "H1ET75WW(1.18)",
+                      "SerialNumber":  "PEVW788"
+                  },
+    "OS_info":  {
+                    "OSVendor":  "Microsoft Corporation",
+                    "OSBuildversion":  "19042",
+                    "OSVersion":  "10.0.19042",
+                    "OSTitle":  "Microsoft Windows 10 Pro for Workstations",
+                    "OSInstallDate":  "28.01.2021",
+                    "OSLatestUpdatesInstalled":  "26.05.2021",
+                    "OSSecondsFromLatestUpdatesInstalled":  102254,
+                    "OSUptime":  26920,
+                    "PendingReboot":  0
+                },
+    "Networks":  {
+                     "Realtek PCIe GbE Family Controller":  {
+                                                                "IPAddress":  "10.80.190.26 fe80::a8de:5c2d:4116:e418",
+                                                                "IpSubnet":  "255.255.252.0 64",
+                                                                "DefaultIPGateway":  "10.80.188.1",
+                                                                "MACAddress":  "64:1C:67:62:93:0B",
+                                                                "DNSServerSearchOrder":  "10.80.189.1 10.10.240.105 10.10.240.106 10.220.13.4 10.220.17.4",
+                                                                "Description":  "Realtek PCIe GbE Family Controller"
+                                                            },
+                     "VirtualBox Host-Only Ethernet Adapter":  {
+                                                                   "IPAddress":  "192.168.56.1 fe80::bdab:5b:e2aa:efc7",
+                                                                   "IpSubnet":  "255.255.255.0 64",
+                                                                   "DefaultIPGateway":  null,
+                                                                   "MACAddress":  "0A:00:27:00:00:09",
+                                                                   "DNSServerSearchOrder":  null,
+                                                                   "Description":  "VirtualBox Host-Only Ethernet Adapter"
+                                                               }
+                 },
+    "Antivirus":  {
+                      "ProductName":  "Windows Defender",
+                      "ProductExe":  "windowsdefender://",
+                      "ProductUpdateStatus":  "Up to date",
+                      "ProductRealTimeProtection":  1
+                  }
+}
