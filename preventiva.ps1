@@ -1,7 +1,7 @@
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 
-$pasta_beltis = Get-Location
+
 
 Function Get-FirewallState {
     [CmdletBinding()]
@@ -194,22 +194,31 @@ class Inventory{
 }
 
 
-function gerar_inventario {
-    $inv = [Inventory]::New()
-    
-    if ( Test-Path "$($pasta_beltis)\$($inv.inventoryData.Hostname).json" ) { 
-        $old_inv = Get-Content "$($pasta_beltis)\$($inv.inventoryData.Hostname).json"
-        Remove-Item "$($pasta_beltis)\$($inv.inventoryData.Hostname).json"
-        New-Item -Path $pasta_beltis -Name "$($inv.inventoryData.Hostname).json" -ItemType "file" -Value "$($inv.inventoryData | ConvertTo-Json)"    
-        $inv = Get-Content "$($pasta_beltis)\DESKTOP-3377U3C.json"
-        $comp = Compare-Object  -ReferenceObject $old_inv -DifferenceObject $inv
-        $comp
-    } else {
-        New-Item -Path $pasta_beltis -Name "$($inv.inventoryData.Hostname).json" -ItemType "file" -Value "$($inv.inventoryData | ConvertTo-Json)"        
-    }
-    
-    
-    
-}
 
-gerar_inventario
+
+
+
+class Preventiva{
+    [string]$folder_path = Get-Location
+    [void]gerar_inventario(){
+        $inv = [Inventory]::New()
+        
+        if ( Test-Path "$($pasta_beltis)\$($inv.inventoryData.Hostname).json" ) { 
+            $old_inv = Get-Content "$($pasta_beltis)\$($inv.inventoryData.Hostname).json"
+            Remove-Item "$($pasta_beltis)\$($inv.inventoryData.Hostname).json"
+            New-Item -Path $pasta_beltis -Name "$($inv.inventoryData.Hostname).json" -ItemType "file" -Value "$($inv.inventoryData | ConvertTo-Json)"    
+            $inv = Get-Content "$($pasta_beltis)\DESKTOP-3377U3C.json"
+            $comp = Compare-Object  -ReferenceObject $old_inv -DifferenceObject $inv
+            $comp
+        } else {
+            New-Item -Path $pasta_beltis -Name "$($inv.inventoryData.Hostname).json" -ItemType "file" -Value "$($inv.inventoryData | ConvertTo-Json)"        
+        }
+        
+        
+        
+    }
+
+    Preventiva(){
+        
+    }
+}
