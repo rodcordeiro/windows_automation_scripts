@@ -5,8 +5,6 @@ title: ''
 labels: ''
 assignees: ''
 ---
-## Description
- Some description about the task
 
-## Task todo
- - [ ] steps the task must complete
+Please add your information bellow
+
