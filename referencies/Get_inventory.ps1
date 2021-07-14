@@ -166,7 +166,6 @@ $zabbix_service_path = (Get-WmiObject win32_service | Where-Object {$_.name -eq 
 $zabbix_agent_path = $zabbix_service_path.substring(0, $zabbix_service_path.IndexOf("--config")).replace("""", "")
 $zabbix_version = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($zabbix_agent_path).FileVersion
 $shell_versions  | Add-Member -type NoteProperty -name PSRemotingActive -Value $psremoting_active     
-
 $result | Add-Member -type NoteProperty -name ShellVersion  -Value  $shell_versions 
 $result | Add-Member -type NoteProperty -name ZabbixAgentVersion -Value $zabbix_version
 
