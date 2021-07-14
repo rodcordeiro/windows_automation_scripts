@@ -1,8 +1,8 @@
 ---
 name: Task issue
 about: Create a task issue, for planned features that will be or are being developed.
-title: ''
-labels: ''
+title: '[TASK] '
+labels: 'enhancement'
 assignees: 'rodcordeiro'
 ---
 ## Description

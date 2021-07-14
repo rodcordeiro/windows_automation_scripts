@@ -1,8 +1,8 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: '[FEAT] '
-labels: 'enhancement'
+name: Includes a new Feature
+about: Does your PR includes a new functionallity?
+title: '[Feat] '
+labels: ''
 assignees: ''
 
 ---
