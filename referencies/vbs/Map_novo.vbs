@@ -1,4 +1,4 @@
-'wscript.echo "Começou"
+'wscript.echo "Comeï¿½ou"
 
 on error resume next
 Set Comandos = WScript.CreateObject("Wscript.Shell")
@@ -20,6 +20,6 @@ Comandos.Run "net use * /delete /y",0,True
 
 'MAPEAMENTOS
 On Error Resume Next
-caminho = "\\Fundacaodorina.org.br.local\compartilhamentos\Dorina"
+caminho = "\\server\compartilhamentos\Dorina"
 Rede.MapNetworkDrive "R:", caminho , "true"
 Nome.NameSpace("R:").Self.Name = "Dorina"
