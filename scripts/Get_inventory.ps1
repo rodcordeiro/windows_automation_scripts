@@ -25,7 +25,14 @@
 
 .EXTERNALSCRIPTDEPENDENCIES 
 
-.RELEASENOTES
+.RELEASENOTES @("Hardware data retrieved:",
+    "Hostname",
+    "Bios information",
+    "OS information",
+    "Network adapters",
+    "Antivirus",
+    "Disks information"
+)
 
 
 #>
@@ -43,14 +50,19 @@
  Outputs a json containing the hardware information.
 .EXAMPLE
  .\Get_inventory.ps1
-
+.EXAMPLE
+ .\Get_inventory.ps1 -Path .\inventario\
+.EXAMPLE
+ Resolve-Path -Path .\inventario\ | .\scripts\Get_inventory.ps1
 #> 
 Param(
-    [parameter(ValueFromPipelineByPropertyName)][string]$Path
+    [parameter(ValueFromPipelineByPropertyName,
+    HelpMessage="Path to save the json file"
+    )]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $Path = $(Resolve-Path -Path "./")
 )
-if (!$Path){
-    $Path = Resolve-Path -Path "./"
-}
 
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
