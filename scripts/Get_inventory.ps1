@@ -15,7 +15,7 @@
 
 .LICENSEURI 
 
-.PROJECTURI https://rodcordeiro.com.br/
+.PROJECTURI 
 
 .ICONURI 
 

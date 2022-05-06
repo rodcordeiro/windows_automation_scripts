@@ -32,7 +32,7 @@ $Installer = $UpdateSession.CreateUpdateInstaller()
 $Installer.Updates = $UpdatesToInstall
 $InstallationResult = $Installer.Install()
 if($InstallationResult.RebootRequired){
-    Write-Host -Object 'Reboot required! please reboot now..' -ForegroundColorore Red
+    Write-Host -Object 'Reboot required! please reboot now..' -ForegroundColor Red
 }
 else {
     Write-Host -Object 'Done..' -ForegroundColor Green
