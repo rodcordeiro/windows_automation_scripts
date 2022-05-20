@@ -1,0 +1,12 @@
+|Aplicativo|Homol|Overcome|Raizs|MagDecor|Hidrolight|NkStore|
+|:-|:-:|:-:|:-:|:-:|:-:|:-:|
+|Armazenagem|1.10|1.6|1.17|1.17|1|1|
+|Recebimento|1.5|1.3|1.3|1.4|1|1|
+|Expedição|1.3|1.3|1.5|1.3|1|1|
+|Picking|1.5|1.1|1.3|1.5|1|1|
+|Embarque|1.1|0|1.1|1.2|1|1|
+|Transferencia|1.1|0|1.1|1.1|1|1|
+|Movimentacao|1.5|1.2|1.5|1.5|1|1|
+|Montagem|1.3|1.1|1.2|1.3|1|1|
+|Inventário|1.0|-|-|-|1|1|
+|Dashboard|1.0|-|-|-|1|1|
