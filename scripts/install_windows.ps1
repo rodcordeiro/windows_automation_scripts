@@ -87,6 +87,11 @@ Function prepareEnvironment{
     downloadBinaries "https://github.com/Kong/insomnia/releases/download/core%402022.3.0/Insomnia.Core-2022.3.0.exe" "insomnia" -Run
     downloadBinaries "https://download.microsoft.com/download/c/7/c/c7ca93fc-3770-4e4a-8a13-1868cb309166/SSMS-Setup-PTB.exe" "SSMS" -Run
     downloadBinaries "https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022&source=VSLandingPage&includeRecommended=true&cid=2030:2cf06761-eaf3-4ecf-b77b-4421af5d579c" "VisualStudio"
+
+    Download-Repositories $repositories
+    Copy-Item "$($env:USERPROFILE)/projetos/.dotfiles/Microsoft.PowerShell_profile.ps1" $PROFILE
+    Copy-Item "$($env:USERPROFILE)/projetos/.dotfiles/.gitconfi*" $env:USERPROFILE
+    Copy-Item "$($env:USERPROFILE)/projetos/.dotfiles/.npmrc" $env:USERPROFILE
 }
 
 function downloadBinaries{
@@ -240,4 +245,3 @@ Function Execute{
 
 
 }
-Download-Repositories $repositories
