@@ -209,6 +209,9 @@ function Download-Repositories {
             $repos = $($Folder.repos | ConvertFrom-Json)
             $repos | ForEach-Object {
                 clone -Alias $_.alias -Folder $Folder -Path $_.repo
+                if($(Test-Path "$PWD/package.json") -eq $True){
+                    yarn
+                }
                 if ($_.branches){
                     $_.branches  | ForEach-Object {
                         git checkout $_
