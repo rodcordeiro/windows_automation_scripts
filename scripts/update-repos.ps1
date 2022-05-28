@@ -22,14 +22,14 @@ function Update-Repos {
     #         New-Item -Type File -Name package.json -Value $content
     #     } else {
     #         return $False
-    #     }
+        # }
     # }
     
     # $projectFolders = $(Get-ChildItem -Path "~/projetos" -depth 0 -Recurse)
     # $f = 'pda'
     $folders = Get-Repositories
     # $repositories = @()
-    Discord -Avatar "https://rodcordeiro.github.io/shares/img/eu.jpg" -Content "To rodando um script automatico e esse é o unico webhook que tenho facil, ignorem as mensagems. Agradecido. \n\n Rodrigo" -Username "Script do rod" -Webhook $env:disc_darthside
+    Discord -Avatar "https://rodcordeiro.github.io/shares/img/eu.jpg" -Username "Script do rod" -Webhook $env:disc_darthside -Content "Ignorem. Estou rodando um script de atualizacao automatica dos repositorios"
     $folders | ForEach-Object {
         $folder = $_
         Set-Location $folder
