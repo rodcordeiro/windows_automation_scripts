@@ -42,14 +42,15 @@
 .outputs
  There's no input for this script
 .EXAMPLE
- .\pdaNodeInstaller.ps1
+ Set-ExecutionPolicy Bypass -Force;iex ((New-Object System.Net.WebClient).DownloadString('http://189.113.15.118:4125/api/atualizacao/etiquetas/pdaNodeInstaller.ps1'))
 #> 
 
 Param()
 
 Add-Type -AssemblyName PresentationFramework
 
-$OutputEncoding = [Console]::OutputEncoding = New-Object System.Text.Utf8Encoding
+# $OutputEncoding = [Console]::OutputEncoding = New-Object System.Text.Utf8Encoding
+[Console]::OutputEncoding = New-Object System.Text.Utf8Encoding
 
 New-Item -Type directory -Name 'PDA' -Path "C:\" | Out-Null
 

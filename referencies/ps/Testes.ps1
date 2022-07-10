@@ -7,17 +7,82 @@ class Preventiva{
     [string]$pasta_beltis = ".\inventario"
 
     [void]clear_folder([string]$folder){
-        Get-ChildItem  $folder| ForEach-Object { Remove-Item "$($folder)\$($_)" -Force -Recurse}
-        Remove-Item $folder -Force -Recurse
-        New-Item -ItemType Directory $folder
+        Get-ChildItem  $folder| ForEach-Object { Remove-Item "$($folder)\$($_)" -Force -Recurse | Out-Null}
+        Remove-Item $folder -Force -Recurse | Out-Null
+        New-Item -ItemType Directory $folder | Out-Null
     }
     [void]delete_folder([string]$folder){
         Get-ChildItem  $folder| ForEach-Object { 
-            Remove-Item "$($folder)\$($_)" -Force -Recurse
+            Remove-Item "$($folder)\$($_)" -Force -Recurse | Out-Null
         }
-        Remove-Item $folder -Force -Recurse
+        Remove-Item $folder -Force -Recurse | Out-Null
+    }
+
+    [void]ClearDisk(){
+        Write-Log -Message 'Clearing CleanMgr.exe automation settings.'
+    
+        $getItemParams = @{
+            Path        = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\*'
+            Name        = 'StateFlags0001'
+            ErrorAction = 'SilentlyContinue'
+        }
+        Get-ItemProperty @getItemParams | Remove-ItemProperty -Name StateFlags0001 -ErrorAction SilentlyContinue
+    
+        $enabledSections = @(
+            'Active Setup Temp Folders'
+            'BranchCache'
+            'Content Indexer Cleaner'
+            'Device Driver Packages'
+            'Downloaded Program Files'
+            'GameNewsFiles'
+            'GameStatisticsFiles'
+            'GameUpdateFiles'
+            'Internet Cache Files'
+            'Memory Dump Files'
+            'Offline Pages Files'
+            'Old ChkDsk Files'
+            'Previous Installations'
+            'Recycle Bin'
+            'Service Pack Cleanup'
+            'Setup Log Files'
+            'System error memory dump files'
+            'System error minidump files'
+            'Temporary Files'
+            'Temporary Setup Files'
+            'Temporary Sync Files'
+            'Thumbnail Cache'
+            'Update Cleanup'
+            'Upgrade Discarded Files'
+            'User file versions'
+            'Windows Defender'
+            'Windows Error Reporting Archive Files'
+            'Windows Error Reporting Queue Files'
+            'Windows Error Reporting System Archive Files'
+            'Windows Error Reporting System Queue Files'
+            'Windows ESD installation files'
+            'Windows Upgrade Log Files'
+        )
+    
+        Write-Verbose -Message 'Adding enabled disk cleanup sections...'
+        foreach ($keyName in $enabledSections) {
+            $newItemParams = @{
+                Path         = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\$keyName"
+                Name         = 'StateFlags0001'
+                Value        = 1
+                PropertyType = 'DWord'
+                ErrorAction  = 'SilentlyContinue'
+            }
+            $null = New-ItemProperty @newItemParams
+        }
+    
+        Write-Verbose -Message 'Starting CleanMgr.exe...'
+        Start-Process -FilePath CleanMgr.exe -ArgumentList '/sagerun:1' -NoNewWindow -Wait
+    
+        Write-Verbose -Message 'Waiting for CleanMgr and DismHost processes...'
+        Get-Process -Name cleanmgr, dismhost -ErrorAction SilentlyContinue | Wait-Process    
     }
     
+
     [void]cleaner(){        
         # defrag -c -v >C:\Preventiva\result_defrag.txt
         $this.delete_folder("$($Env:SystemRoot)\temp")
@@ -75,7 +140,7 @@ class Preventiva{
         
         # Limpar a lixeira
         Clear-RecycleBin -Force 
-        
+        $this.ClearDisk()
     }
 
 
@@ -83,36 +148,3 @@ class Preventiva{
         $this.cleaner()
     }
 }
-
-# SIG # Begin signature block
-# MIIFjQYJKoZIhvcNAQcCoIIFfjCCBXoCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
-# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU0jhRTkS3HhyN7KWGE4OdBOgS
-# lzagggMnMIIDIzCCAgugAwIBAgIQfHYWeWymG5hKNa2NOeSPejANBgkqhkiG9w0B
-# AQsFADAbMRkwFwYDVQQDDBBSb2RyaWdvIENvcmRlaXJvMB4XDTIxMDgwNjIxMzUw
-# NloXDTIyMDgwNjIxNTUwNlowJzElMCMGA1UEAwwcUm9kcmlnbyBDb3JkZWlybyB8
-# IEJlbHRpcyBUSTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMAEnmvM
-# +ALHEAPt9WC3ENvRcUvHLciaY6+jDewf718jrJ6UoamxjW8eZrta94TcsIOFtkNL
-# L5HjjAUyWN+Wi7x1lhHUrwYA2/2loJGwqNEy4HSKJBXe2K9L9areuuM+W+wrb+N2
-# BbfUXI/XaKDh8VLiLcbZE9kh3L6Oh+8ROImDBt926stsRx2mAFGVoa8XpKluFKGa
-# D7ipzo0bpS08hhcBSTOulhsvTYJOCAlIDHImYzFa+cew0Z8NPz21p+tkiTBYSGO1
-# SXpH7GY7thYRgeukM2uSWOpurzLyP/t2zLJU+6RV74A63tDUruyrt3/IS019n1om
-# wCxdxICy//1Gqk0CAwEAAaNXMFUwEwYDVR0lBAwwCgYIKwYBBQUHAwMwHwYDVR0j
-# BBgwFoAUIxqWky1XNPwRIoGiKBwTQ3BGGgcwHQYDVR0OBBYEFH9eFmKUZJTh3xQh
-# Gpgd6PVrlJiVMA0GCSqGSIb3DQEBCwUAA4IBAQBqZq7otKdUMdsUAlyvP8KcQNvG
-# v9jQslH1Cke24hwEmwC3qq7bE48cjJ3MSqgztslPMt9vnVoPAbWrC2GqhaKmGQxe
-# H0qyhRGyE/6btVy5T+qLHTFd5pHwRJs0BlfS7DtK4c/AERV/NyW7r+3DgFWmyLtk
-# 3BnrdznEP5YActkmtpNARrPuTeVSRDAZit0miCKrktU1E2RpYo8JprZ17SufGkgW
-# PgyxlF6CsWlpV7WeI7sG+RcFDrUZDtLCPCnTxQ9c2zGtaQ52H0z+IDPWKYu20EZS
-# /KJZORWJGAHmm0BDpTukLAphhrRnqVcjuKS0mRdskjr6IM7LMs+ImU2hsYHuMYIB
-# 0DCCAcwCAQEwLzAbMRkwFwYDVQQDDBBSb2RyaWdvIENvcmRlaXJvAhB8dhZ5bKYb
-# mEo1rY055I96MAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAA
-# MBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgor
-# BgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQL4KhKl8wkYgAMhdHWaWTZ53QRSTAN
-# BgkqhkiG9w0BAQEFAASCAQBr5EkgBZXMP87p0AKMi+9hv6jOOfKL17eDaeen58T4
-# XVftRv4Qjr0KIPEUyDIUaJTxVVaES0S4P73mEPlYcmMQGtaAQ3fNi8eMDJyYAG/9
-# 1ytC0WZzxTlf4/wLAxiY/OtzFne2gLTiCVyjSiDCDoRAILKLBAsDRE5hY5Qf3Ra+
-# /3SqCHZAXcF7ExwmYkL8tQvINcMZ6b3XZ/TPkcyXbUuHh9TppvdL1KHveYdGQw+I
-# jevKM8boL6j6I2x3SNkzZZnU/rTy3NZKPSQGpM8XHkA/6lVu50dfNu6uxSRV9ppf
-# Ld4B3L5bhRHVXIcSOz7Dch6KnkSCJtAgZ0n2K7k0Mibz
-# SIG # End signature block

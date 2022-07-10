@@ -29,24 +29,25 @@ function Update-Repos {
     # $f = 'pda'
     $folders = Get-Repositories
     # $repositories = @()
-    Discord -Avatar "https://rodcordeiro.github.io/shares/img/eu.jpg" -Username "Script do rod" -Webhook $env:disc_darthside -Content "Ignorem. Estou rodando um script de atualizacao automatica dos repositorios"
+    # Discord -Avatar "https://rodcordeiro.github.io/shares/img/eu.jpg" -Username "Script do rod" -Webhook $env:disc_darthside -Content "Ignorem. Estou rodando um script de atualizacao automatica dos repositorios"
     $folders | ForEach-Object {
-        $folder = $_
-        Set-Location $folder
-        $git = isInsideGit
-        # $lib = hasPdaLib
-        if($git -and $(git remote -v | Select-String 'fetch')){
-            # $branch = $(git branch | select-string "\*").ToString().split(" ")[1]
-            # UpdatePDAlib
-            $git_dir = $(Split-Path -Path $(git rev-parse --show-toplevel) -Leaf)
-            $git_index = $PWD.ToString().IndexOf($git_dir)
-            $CmdPromptCurrentFolder = $PWD.ToString().Substring($git_index)
+        $folder = Resolve-Path -Path $_
+        $folder
+    #     Set-Location $folder
+    #     $git = isInsideGit
+    #     # $lib = hasPdaLib
+    #     if($git -and $(git remote -v | Select-String 'fetch')){
+    #         # $branch = $(git branch | select-string "\*").ToString().split(" ")[1]
+    #         # UpdatePDAlib
+    #         $git_dir = $(Split-Path -Path $(git rev-parse --show-toplevel) -Leaf)
+    #         $git_index = $PWD.ToString().IndexOf($git_dir)
+    #         $CmdPromptCurrentFolder = $PWD.ToString().Substring($git_index)
 
-            git add .
-            git commit -m '[skip ci] Updating repositories'
-            git pull origin --all
-            git push -u origin --all
-            Discord -Avatar "https://rodcordeiro.github.io/shares/img/eu.jpg" -Content "Atualizado o $CmdPromptCurrentFolder" -Username "Script do rod" -Webhook $env:disc_darthside
-      }
+    #         git add .
+    #         git commit -m '[skip ci] Updating repositories'
+    #         git pull origin --all
+    #         git push -u origin --all
+    #         Discord -Avatar "https://rodcordeiro.github.io/shares/img/eu.jpg" -Content "Atualizado o $CmdPromptCurrentFolder" -Username "Script do rod" -Webhook $env:disc_darthside
+    #   }
     }
 }
