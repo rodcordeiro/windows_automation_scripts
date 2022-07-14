@@ -1,6 +1,17 @@
-function pda {
+Function Restart-IISSite {
     param(
-        [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Please, inform the notification type")][ValidateSet("nk", "hl", "centerlar","homol")][string]$Client,
+        [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Please, inform the notification type")]
+        [string]$Name
+    )
+    Get-IISSite | Select-String $Name | ForEach-Object { 
+        Stop-IISSite $_ -Confirm:$false
+        Start-IISSite $_
+    }
+}
+
+Function pda {
+    param(
+        [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Please, inform the notification type")][ValidateSet("nk", "hl", "centerlar", "homol")][string]$Client,
         [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Please, inform the notification type")][ValidateSet("Admin", "WMS", "Etiquetas", "apk", "inv:front", "inv:api")][string]$Project
     )
     $env:PDA_ENVIRONMENT = "dev";
