@@ -4,6 +4,7 @@
 # Funcao para fazer a pesquisa
 function Get-GoogleAnswer {
     param (
+        [Parameter(Mandatory, ValueFromRemainingArguments)]    
         $mensagemErro
     )
 

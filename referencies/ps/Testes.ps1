@@ -143,8 +143,10 @@ class Preventiva{
         $this.ClearDisk()
     }
 
+    DISM.exe /Online /Cleanup-image /Restorehealth
+    sfc /scannow
 
-    Preventiva(){
-        $this.cleaner()
-    }
+    # Preventiva(){
+    #     $this.cleaner()
+    # }
 }
