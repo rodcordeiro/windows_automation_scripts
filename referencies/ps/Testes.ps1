@@ -4,14 +4,15 @@
 # Verificar se os arquivos estão na pasta
 # Executar
 class Preventiva{
-    [string]$pasta_beltis = ".\inventario"
+    [string]$localFolder = "c:\Beltis"
+    [string]$serverFolder = "\\192.168.0.100\TI"
 
-    [void]clear_folder([string]$folder){
+    hidden [void]clear_folder([string]$folder){
         Get-ChildItem  $folder| ForEach-Object { Remove-Item "$($folder)\$($_)" -Force -Recurse | Out-Null}
         Remove-Item $folder -Force -Recurse | Out-Null
         New-Item -ItemType Directory $folder | Out-Null
     }
-    [void]delete_folder([string]$folder){
+    hidden [void]delete_folder([string]$folder){
         Get-ChildItem  $folder| ForEach-Object { 
             Remove-Item "$($folder)\$($_)" -Force -Recurse | Out-Null
         }
@@ -80,11 +81,12 @@ class Preventiva{
     
         Write-Verbose -Message 'Waiting for CleanMgr and DismHost processes...'
         Get-Process -Name cleanmgr, dismhost -ErrorAction SilentlyContinue | Wait-Process    
+        Optimize-Volume -ReTrim -Defrag -SlabConsolidate -TierOptimize
+
     }
     
 
     [void]cleaner(){        
-        # defrag -c -v >C:\Preventiva\result_defrag.txt
         $this.delete_folder("$($Env:SystemRoot)\temp")
         $this.delete_folder("$($Env:SystemRoot)\Prefetch")
         $this.delete_folder($Env:TEMP)
@@ -101,51 +103,83 @@ class Preventiva{
         # rd /s /q c:\windows\Installer
         $this.delete_folder("$($Env:SystemRoot)\system32\ReinstallBackups")# rd /s /q c:\windows\system32\ReinstallBackups
         $this.delete_folder("C:\WIN386.SWP") # del c:\WIN386.SWP
-        # if not exist "C:\WINDOWS\Users\*.*" goto skip
-        # if exist "C:\WINDOWS\Users\*.zip" del "C:\WINDOWS\Users\*.zip" /f /q
-        # if exist "C:\WINDOWS\Users\*.exe" del "C:\WINDOWS\Users\*.exe" /f /q
-        # if exist "C:\WINDOWS\Users\*.gif" del "C:\WINDOWS\Users\*.gif" /f /q
-        # if exist "C:\WINDOWS\Users\*.jpg" del "C:\WINDOWS\Users\*.jpg" /f /q
-        # if exist "C:\WINDOWS\Users\*.png" del "C:\WINDOWS\Users\*.png" /f /q
-        # if exist "C:\WINDOWS\Users\*.bmp" del "C:\WINDOWS\Users\*.bmp" /f /q
-        # if exist "C:\WINDOWS\Users\*.avi" del "C:\WINDOWS\Users\*.avi" /f /q
-        # if exist "C:\WINDOWS\Users\*.mpg" del "C:\WINDOWS\Users\*.mpg" /f /q
-        # if exist "C:\WINDOWS\Users\*.mpeg" del "C:\WINDOWS\Users\*.mpeg" /f /q
-        # if exist "C:\WINDOWS\Users\*.ra" del "C:\WINDOWS\Users\*.ra" /f /q
-        # if exist "C:\WINDOWS\Users\*.ram" del "C:\WINDOWS\Users\*.ram"/f /q
-        # if exist "C:\WINDOWS\Users\*.mp3" del "C:\WINDOWS\Users\*.mp3" /f /q
-        # if exist "C:\WINDOWS\Users\*.mov" del "C:\WINDOWS\Users\*.mov" /f /q
-        # if exist "C:\WINDOWS\Users\*.qt" del "C:\WINDOWS\Users\*.qt" /f /q
-        # if exist "C:\WINDOWS\Users\*.asf" del "C:\WINDOWS\Users\*.asf" /f /q
-        # :skip
-        # if not exist C:\WINDOWS\Users\Users\*.* goto skippy /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.zip del C:\WINDOWS\Users\Users\*.zip /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.exe del C:\WINDOWS\Users\Users\*.exe /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.gif del C:\WINDOWS\Users\Users\*.gif /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.jpg del C:\WINDOWS\Users\Users\*.jpg /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.png del C:\WINDOWS\Users\Users\*.png /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.bmp del C:\WINDOWS\Users\Users\*.bmp /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.avi del C:\WINDOWS\Users\Users\*.avi /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.mpg del C:\WINDOWS\Users\Users\*.mpg /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.mpeg del C:\WINDOWS\Users\Users\*.mpeg /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.ra del C:\WINDOWS\Users\Users\*.ra /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.ram del C:\WINDOWS\Users\Users\*.ram /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.mp3 del C:\WINDOWS\Users\Users\*.mp3 /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.asf del C:\WINDOWS\Users\Users\*.asf /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.qt del C:\WINDOWS\Users\Users\*.qt /f /q
-        # if exist C:\WINDOWS\Users\AppData\Temp\*.mov del C:\WINDOWS\Users\Users\*.mov /f /q
-        # :skippy
-        # if exist "C:\WINDOWS\ff*.tmp" del C:\WINDOWS\ff*.tmp /f /q
-        $this.delete_folder("$($Env:SystemRoot)\ShellIconCache")# if exist C:\WINDOWS\ShellIconCache del /f /q "C:\WINDOWS\ShellI~1\*.*"
+        if(Test-Path -Path "$($env:APPDATA)\*.zip"){
+            Remove-Item "$($env:APPDATA)\*.zip" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.exe"){
+            Remove-Item "$($env:APPDATA)\*.exe" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.gif"){
+            Remove-Item "$($env:APPDATA)\*.gif" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.jpg"){
+            Remove-Item "$($env:APPDATA)\*.jpg" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.png"){
+            Remove-Item "$($env:APPDATA)\*.png" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.jpeg"){
+            Remove-Item "$($env:APPDATA)\*.jpeg" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.bmp"){
+            Remove-Item "$($env:APPDATA)\*.bmp" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.avi"){
+            Remove-Item "$($env:APPDATA)\*.avi" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.mpg"){
+            Remove-Item "$($env:APPDATA)\*.mpg" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.mpeg"){
+            Remove-Item "$($env:APPDATA)\*.mpeg" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.m4a"){
+            Remove-Item "$($env:APPDATA)\*.m4a" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.ra"){
+            Remove-Item "$($env:APPDATA)\*.ra" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.ram"){
+            Remove-Item "$($env:APPDATA)\*.ram" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.mp3"){
+            Remove-Item "$($env:APPDATA)\*.mp3" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.mov"){
+            Remove-Item "$($env:APPDATA)\*.mov" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.qt"){
+            Remove-Item "$($env:APPDATA)\*.qt" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.asf"){
+            Remove-Item "$($env:APPDATA)\*.asf" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.mp4"){
+            Remove-Item "$($env:APPDATA)\*.mp4" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($env:APPDATA)\*.rar"){
+            Remove-Item "$($env:APPDATA)\*.rar" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($Env:SystemRoot)\ff*.tmp"){
+            Remove-Item "$($Env:SystemRoot)\ff*.tmp" -Force -Recurse | Out-Null
+        }
+        if(Test-Path -Path "$($Env:SystemRoot)\ShellIconCache"){
+            $this.delete_folder("$($Env:SystemRoot)\ShellIconCache")
+        }
         
         # Limpar a lixeira
         Clear-RecycleBin -Force 
         $this.ClearDisk()
     }
-
-    DISM.exe /Online /Cleanup-image /Restorehealth
-    sfc /scannow
-
+    
+    [void]Repair(){
+        Write-Output 'Starting DISM command with arguments: /Online /Cleanup-image /Restorehealth'
+        DISM.exe /Online /Cleanup-image /Restorehealth
+        Write-Output 'Starting SFC command with arguments: /scannow'
+        sfc /scannow
+        Write-Output 'Finished repair.'    
+    }
+    
     # Preventiva(){
     #     $this.cleaner()
     # }
