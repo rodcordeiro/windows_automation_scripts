@@ -42,7 +42,14 @@
 .EXAMPLE
  .\Get_inventory.ps1
 #> 
-Param()
+Param(
+    [parameter(ValueFromPipelineByPropertyName)]
+    [System.Array]$Repositories
+)
+class IRepository {
+    [ValidateNotNullOrEmpty()][string]$Parent
+    [ValidateNotNullOrEmpty()][string[]]$repos
+}
 
 # choco
 # git
@@ -52,14 +59,6 @@ Param()
 # ssms
 # profile
 
-#Preparing for Node
-choco install -y nvm
-nvm install 14.17.13
-nvm use 14.17.3
-
-#### Preparing for React Native
-choco install -y openjdk11
-mkdir 'C:\Android\Sdk' | Out-Null
 # https://r2---sn-h0oqp8vm-bpbe.gvt1.com/edgedl/android/studio/install/2021.2.1.15/android-studio-2021.2.1.15-windows.exe?cms_redirect=yes&mh=Dq&mip=177.92.95.10&mm=28&mn=sn-h0oqp8vm-bpbe&ms=nvh&mt=1658499866&mv=m&mvi=2&pl=23&rmhost=r1---sn-h0oqp8vm-bpbe.gvt1.com&shardbypass=sd
 
 ####
@@ -78,34 +77,90 @@ mkdir 'C:\Android\Sdk' | Out-Null
 
 # # FUNCTIONS
 
-# Function prepareEnvironment{
-#     Write-Output "Preparing environment..."
-#     installModules
+Function prepareEnvironment {
+    Write-Output "Preparing environment..."
+    installModules
 
-#     Write-Output "Creating default folders"
-#     New-Item -Type Directory -Name Scripts -Path C:\ | Out-Null
-#     New-Item -Type Directory -Name Tools -Path C:\ | Out-Null
-#     New-Item -Type Directory -Name projetos -Path $env:USERPROFILE | Out-Null
+    Write-Output "Creating default folders"
+    New-Item -Type Directory -Name Scripts -Path C:\ | Out-Null
+    New-Item -Type Directory -Name Tools -Path C:\ | Out-Null
+    New-Item -Type Directory -Name projetos -Path $env:USERPROFILE | Out-Null
     
-#     Write-Output "Install chocolatey"
-#     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    Write-Output "Install chocolatey"
+    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     
-#     Write-Output "Install Node"
-#     choco install nodejs --version 14.17.3 -y
+    Write-Output "Install Node"
+    choco install nodejs --version 14.17.3 -y
+    choco install -y nvm
 
-#     downloadBinaries "https://github.com/ytdl-org/youtube-dl/releases/download/2021.12.17/youtube-dl.exe" "youtube-dl"
-#     downloadBinaries "https://github.com/beekeeper-studio/beekeeper-studio/releases/download/v3.4.3/Beekeeper-Studio-Setup-3.4.3.exe" "beekeeper" -Run
-#     downloadBinaries "https://github.com/Kong/insomnia/releases/download/core%402022.3.0/Insomnia.Core-2022.3.0.exe" "insomnia" -Run
-#     downloadBinaries "https://download.microsoft.com/download/c/7/c/c7ca93fc-3770-4e4a-8a13-1868cb309166/SSMS-Setup-PTB.exe" "SSMS" -Run
-#     downloadBinaries "https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022&source=VSLandingPage&includeRecommended=true&cid=2030:2cf06761-eaf3-4ecf-b77b-4421af5d579c" "VisualStudio"
+    Write-Output "Installing openjdk11 for React Native"
+    choco install -y openjdk11
+    New-Item -Type Directory -Name  Android -Path C:\  | Out-Null 
+    New-Item -Type Directory -Name  Sdk -Path C:\Android  | Out-Null 
 
-#     Download-Repositories $repositories
-#     Copy-Item "$($env:USERPROFILE)/projetos/.dotfiles/Microsoft.PowerShell_profile.ps1" $PROFILE
-#     Copy-Item "$($env:USERPROFILE)/projetos/.dotfiles/.gitconfi*" $env:USERPROFILE
-#     Copy-Item "$($env:USERPROFILE)/projetos/.dotfiles/.npmrc" $env:USERPROFILE
-# }
 
-function downloadBinaries{
+    Write-Output 'Downloading binary files for custom tools and software automated installation'
+    downloadBinaries "https://github.com/ytdl-org/youtube-dl/releases/download/2021.12.17/youtube-dl.exe" "youtube-dl"
+    downloadBinaries "https://github.com/beekeeper-studio/beekeeper-studio/releases/download/v3.4.3/Beekeeper-Studio-Setup-3.4.3.exe" "beekeeper" -Run
+    downloadBinaries "https://github.com/Kong/insomnia/releases/download/core%402022.3.0/Insomnia.Core-2022.3.0.exe" "insomnia" -Run
+    downloadBinaries "https://github.com/jgraph/drawio-desktop/releases/download/v20.3.0/draw.io-20.3.0-windows-installer.exe" "DrawIo" -Run
+    Pause
+    downloadBinaries "https://download.microsoft.com/download/c/7/c/c7ca93fc-3770-4e4a-8a13-1868cb309166/SSMS-Setup-PTB.exe" "SSMS" -Run
+    Pause
+    downloadBinaries "https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022&source=VSLandingPage&includeRecommended=true&cid=2030:2cf06761-eaf3-4ecf-b77b-4421af5d579c" "VisualStudio"
+    Pause
+
+    Download-Repositories $repositories
+    Copy-Item "$($env:USERPROFILE)/projetos/.dotfiles/Microsoft.PowerShell_profile.ps1" $PROFILE
+    Copy-Item "$($env:USERPROFILE)/projetos/.dotfiles/.gitconfi*" $env:USERPROFILE
+    Copy-Item "$($env:USERPROFILE)/projetos/.dotfiles/.npmrc" $env:USERPROFILE
+}
+
+Function Pause ($Message = "Press any key to continue...") {
+    # Check if running in PowerShell ISE
+    If ($psISE) {
+       # "ReadKey" not supported in PowerShell ISE.
+       # Show MessageBox UI
+       $Shell = New-Object -ComObject "WScript.Shell"
+       $Button = $Shell.Popup("Click OK to continue.", 0, "Hello", 0)
+       Return
+    }
+  
+    $Ignore =
+       16,  # Shift (left or right)
+       17,  # Ctrl (left or right)
+       18,  # Alt (left or right)
+       20,  # Caps lock
+       91,  # Windows key (left)
+       92,  # Windows key (right)
+       93,  # Menu key
+       144, # Num lock
+       145, # Scroll lock
+       166, # Back
+       167, # Forward
+       168, # Refresh
+       169, # Stop
+       170, # Search
+       171, # Favorites
+       172, # Start/Home
+       173, # Mute
+       174, # Volume Down
+       175, # Volume Up
+       176, # Next Track
+       177, # Previous Track
+       178, # Stop Media
+       179, # Play
+       180, # Mail
+       181, # Select Media
+       182, # Application 1
+       183  # Application 2
+  
+    Write-Host -NoNewline $Message
+    While ($KeyInfo.VirtualKeyCode -Eq $Null -Or $Ignore -Contains $KeyInfo.VirtualKeyCode) {
+       $KeyInfo = $Host.UI.RawUI.ReadKey("NoEcho, IncludeKeyDown")
+    }
+ }
+function downloadBinaries {
     param(
         [string]$url,
         [string]$executable,
@@ -114,100 +169,100 @@ function downloadBinaries{
     
     Write-Output "Downloading $executable"
     Invoke-WebRequest -Uri $url -outfile "C:\tools\$executable.exe"
-    if($Run){
+    if ($Run) {
         Invoke-Expression "C:\tools\$executable.exe"
     }
 }
-# Function installModules{
-#     Write-Output "Installing modules..."
-#     Install-Module Microsoft.PowerShell.Management -Repository PSGalery
-#     Install-Module  -Name Microsoft.PowerShell.Security -Repository PSGalery
-#     Install-Module  -Name Microsoft.PowerShell.Utility -Repository PSGalery
-#     Install-Module  -Name PackageManagement -Repository PSGalery
-#     Install-Module  -Name PowerShellGet -Repository PSGalery
-#     Install-Module  -Name PSReadline -Repository PSGalery
-#     Install-Module  -Name psscriptanalyzer -Repository PSGalery
-#     Install-Module  -Name Terminal-Icons -Repository PSGalery
-#     Install-Module  -Name WindowsConsoleFonts -Repository PSGalery
-#     Write-Output "Modules Installed"
-# }
+Function installModules {
+    Write-Output "Installing modules..."
+    Install-Module Microsoft.PowerShell.Management -Repository PSGalery
+    Install-Module  -Name Microsoft.PowerShell.Security -Repository PSGalery
+    Install-Module  -Name Microsoft.PowerShell.Utility -Repository PSGalery
+    Install-Module  -Name PackageManagement -Repository PSGalery
+    Install-Module  -Name PowerShellGet -Repository PSGalery
+    Install-Module  -Name PSReadline -Repository PSGalery
+    Install-Module  -Name psscriptanalyzer -Repository PSGalery
+    Install-Module  -Name Terminal-Icons -Repository PSGalery
+    Install-Module  -Name WindowsConsoleFonts -Repository PSGalery
+    Write-Output "Modules Installed"
+}
 
-# Function isInsideGit() {
-#     if ($(Split-Path -Path $PWD -Leaf) -ne '.git') {
-#       if ($(Test-Path -Path "$PWD\.git") -ne $False) {
-#         return Resolve-Path -Path "$PWD"
-#       }
-#       if ($(Test-Path -Path "$PWD\..\.git") -ne $False) {
-#         return Resolve-Path -Path "$PWD\.."
-#       }
-#       if ($(Test-Path -Path "$PWD\..\..\.git") -ne $False) {
-#         return Resolve-Path -Path "$PWD\..\.."
-#       }    
-#       if ($(Test-Path -Path "$PWD\..\..\..\.git") -ne $False) {
-#         return Resolve-Path -Path "$PWD\..\..\.."
-#       }
-#     }
-#     else {
-#       return Resolve-Path -Path "$PWD"
-#     }
-#   }
+Function isInsideGit() {
+    if ($(Split-Path -Path $PWD -Leaf) -ne '.git') {
+        if ($(Test-Path -Path "$PWD\.git") -ne $False) {
+            return Resolve-Path -Path "$PWD"
+        }
+        if ($(Test-Path -Path "$PWD\..\.git") -ne $False) {
+            return Resolve-Path -Path "$PWD\.."
+        }
+        if ($(Test-Path -Path "$PWD\..\..\.git") -ne $False) {
+            return Resolve-Path -Path "$PWD\..\.."
+        }    
+        if ($(Test-Path -Path "$PWD\..\..\..\.git") -ne $False) {
+            return Resolve-Path -Path "$PWD\..\..\.."
+        }
+    }
+    else {
+        return Resolve-Path -Path "$PWD"
+    }
+}
   
-#   function clone {
-#     <# 
-#     .SYNOPSIS 
-#         Function to customize repositories cloning with some validations.
-#     .DESCRIPTION
-#         Function to customize repositories cloning with some validations. It validates the folder and the repository link.
-#     .Parameter <Path>
-#         Repository link
-#     .Parameter <Folder>
-#         Provides you the possibility of cloning the repository on a different folder. Pass the desired folder path.
-#     .Parameter <Alias>
-#         Provides you the possibility of changing the destiny folder name.
-#     .Parameter <Confirm>
-#         Forces execution
-#     .EXAMPLE
-#         clone https://github.com/user/repo.git
-#     .EXAMPLE
-#         clone https://github.com/user/repo.git -y
-#     .EXAMPLE
-#         clone https://github.com/user/repo.git -Folder test
-#     .EXAMPLE
-#         clone https://github.com/user/repo.git -Alias someTest
-#     .EXAMPLE
-#         clone https://github.com/user/repo.git someTest
-#     #>
+function clone {
+    <# 
+    .SYNOPSIS 
+        Function to customize repositories cloning with some validations.
+    .DESCRIPTION
+        Function to customize repositories cloning with some validations. It validates the folder and the repository link.
+    .Parameter <Path>
+        Repository link
+    .Parameter <Folder>
+        Provides you the possibility of cloning the repository on a different folder. Pass the desired folder path.
+    .Parameter <Alias>
+        Provides you the possibility of changing the destiny folder name.
+    .Parameter <Confirm>
+        Forces execution
+    .EXAMPLE
+        clone https://github.com/user/repo.git
+    .EXAMPLE
+        clone https://github.com/user/repo.git -y
+    .EXAMPLE
+        clone https://github.com/user/repo.git -Folder test
+    .EXAMPLE
+        clone https://github.com/user/repo.git -Alias someTest
+    .EXAMPLE
+        clone https://github.com/user/repo.git someTest
+    #>
 
-#     param(
-#         [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Please, enter the repository link for download")][string]$Path,
-#         [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Provides you the possibility of changing the destiny folder name.")][string]$Alias,
-#         [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Provides you the possibility of cloning the repository on a different folder. Pass the desired folder path.")][string]$Folder,
-#         [parameter(HelpMessage = "Please, enter the repository link for download")][Alias('y', 'yes')][Switch] $confirm
-#     )
+    param(
+        [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Please, enter the repository link for download")][string]$Path,
+        [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Provides you the possibility of changing the destiny folder name.")][string]$Alias,
+        [parameter(ValueFromPipelineByPropertyName, HelpMessage = "Provides you the possibility of cloning the repository on a different folder. Pass the desired folder path.")][string]$Folder,
+        [parameter(HelpMessage = "Please, enter the repository link for download")][Alias('y', 'yes')][Switch] $confirm
+    )
 
-#     if (!$Path) {
-#         Write-Host "You must provide a repository to clone!"
-#     }
-#     $repository = $Path
-#     $destiny = if ($Folder) { $Folder } else { $pwd }
-#     $localFolder = if ($Alias) { $Alias } else { $(Split-Path -Path $repository -Leaf) }
+    if (!$Path) {
+        Write-Host "You must provide a repository to clone!"
+    }
+    $repository = $Path
+    $destiny = if ($Folder) { $Folder } else { $pwd }
+    $localFolder = if ($Alias) { $Alias } else { $(Split-Path -Path $repository -Leaf) }
 
-#     if ($(Split-Path -Path $destiny -Leaf) -eq 'personal' -Or $(Split-Path -Path $destiny -Leaf) -eq 'pda' -Or $(Split-Path -Path $destiny -Leaf) -eq 'estudos' -Or $confirm) {
-#         if ($folder) { Set-Location $(Resolve-Path -Path $Folder) }
-#         git clone $repository $(if ($Alias) { $Alias })
-#         Set-Location $(Resolve-Path -Path $localFolder)
-#         return
-#     }
+    if ($(Split-Path -Path $destiny -Leaf) -eq 'personal' -Or $(Split-Path -Path $destiny -Leaf) -eq 'pda' -Or $(Split-Path -Path $destiny -Leaf) -eq 'estudos' -Or $confirm) {
+        if ($folder) { Set-Location $(Resolve-Path -Path $Folder) }
+        git clone $repository $(if ($Alias) { $Alias })
+        Set-Location $(Resolve-Path -Path $localFolder)
+        return
+    }
 
-#     $response = Read-Host "You're outside of the predefined projects folders. Do you want to proceed? ([Y]es/[N]o)"
-#     if ($response -eq 'Y' -Or $response -eq 'y' -Or $response -eq 'S' -Or $response -eq 's') {
-#         if ($folder) { Set-Location $(Resolve-Path -Path $Folder) }
-#         git clone $repository $(if ($Alias) { $Alias })
-#         Set-Location $(Resolve-Path -Path $localFolder)
-#         return
-#     }
-#     Write-Host "Cancelling cloning projects. Have a nice day!"
-# }
+    $response = Read-Host "You're outside of the predefined projects folders. Do you want to proceed? ([Y]es/[N]o)"
+    if ($response -eq 'Y' -Or $response -eq 'y' -Or $response -eq 'S' -Or $response -eq 's') {
+        if ($folder) { Set-Location $(Resolve-Path -Path $Folder) }
+        git clone $repository $(if ($Alias) { $Alias })
+        Set-Location $(Resolve-Path -Path $localFolder)
+        return
+    }
+    Write-Host "Cancelling cloning projects. Have a nice day!"
+}
 
 function Download-Repositories {
     param(
@@ -215,15 +270,15 @@ function Download-Repositories {
     )
     $Repos | ForEach-Object {
         $Folder = $_
-        if($($(Test-Path -Path $(Resolve-Path -Path $Folder.Parent)) -eq $True)){
-            Set-Location $Folder.Parent
+        if ($($(Test-Path -Path $(Resolve-Path -Path $Folder.Parent)) -eq $True)) {
             $repos = $($Folder.repos | ConvertFrom-Json)
             $repos | ForEach-Object {
-                clone -Alias $_.alias -Folder $Folder -Path $_.repo
-                if($(Test-Path "$PWD/package.json") -eq $True){
+                Set-Location $Folder.Parent
+                clone -Alias $_.alias -Folder $Folder -Path $_.repo -y
+                if ($(Test-Path "$PWD/package.json") -eq $True) {
                     yarn
                 }
-                if ($_.branches){
+                if ($_.branches) {
                     $_.branches  | ForEach-Object {
                         git checkout $_
                         git pull --set-upstream origin $_
@@ -231,13 +286,14 @@ function Download-Repositories {
                 }
                 git push -u origin --all                
             }
-        } else {
+        }
+        else {
             New-Item -Type Directory $Folder.Parent
-            Set-Location $Folder.Parent
             $repos = $($Folder.repos | ConvertFrom-Json)
             $repos | ForEach-Object {
-                clone -Alias $_.alias -Folder $Folder -Path $_.repo
-                if ($_.branches){
+                Set-Location $Folder.Parent
+                clone -Alias $_.alias -Folder $Folder -Path $_.repo -y
+                if ($_.branches) {
                     $_.branches  | ForEach-Object {
                         git checkout $_
                         git pull --set-upstream origin $_
@@ -250,12 +306,22 @@ function Download-Repositories {
 }
 
 
-# # EXECUTION
-# Function Execute{
-#     param()
-#     PROCESS {
-#         prepareEnvironment
-#     }
+# EXECUTION
+Function Execute {
+    param()
+    Begin {
+        if ($Repositories) {
+            [IRepository[]]$repos = $Repositories
+        }
+    }
+    PROCESS {
+        # prepareEnvironment
+        
+    }
+    End {}
 
 
-# }
+}
+
+
+Execute
