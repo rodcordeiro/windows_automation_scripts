@@ -184,3 +184,6 @@ class Preventiva{
     #     $this.cleaner()
     # }
 }
+
+$teste = [Preventiva]::new()
+$teste.cleaner()
