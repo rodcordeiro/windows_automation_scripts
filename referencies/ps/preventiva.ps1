@@ -180,9 +180,9 @@ class Preventiva{
         Write-Output 'Finished repair.'    
     }
     
-    # Preventiva(){
-    #     $this.cleaner()
-    # }
+    Preventiva(){
+        $this.cleaner()
+    }
 }
 
 $teste = [Preventiva]::new()
