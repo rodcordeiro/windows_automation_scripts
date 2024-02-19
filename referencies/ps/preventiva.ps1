@@ -77,11 +77,11 @@ class Preventiva{
         }
     
         Write-Verbose -Message 'Starting CleanMgr.exe...'
-        Start-Process -FilePath CleanMgr.exe -ArgumentList '/sagerun:1' -NoNewWindow -Wait
+        Start-Process -FilePath CleanMgr.exe -ArgumentList '/sagerun:1 /d C' -NoNewWindow -Wait 
     
         Write-Verbose -Message 'Waiting for CleanMgr and DismHost processes...'
         Get-Process -Name cleanmgr, dismhost -ErrorAction SilentlyContinue | Wait-Process    
-        Optimize-Volume -ReTrim -Defrag -SlabConsolidate -TierOptimize
+        Optimize-Volume -ReTrim -Defrag -SlabConsolidate -TierOptimize -DriveLetter C
 
     }
     
@@ -180,9 +180,9 @@ class Preventiva{
         Write-Output 'Finished repair.'    
     }
     
-    Preventiva(){
-        $this.cleaner()
-    }
+    # Preventiva(){
+    #     $this.cleaner()
+    # }
 }
 
 $teste = [Preventiva]::new()

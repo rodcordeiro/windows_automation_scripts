@@ -23,7 +23,7 @@ $Downloader.Download()
 #Check if the Drivers are all downloaded and trigger the Installation
 $UpdatesToInstall = New-Object -Com Microsoft.Update.UpdateColl
 $updates | Foreach-Object -Process {
-    if($_.IsDownloaded){
+    if ($_.IsDownloaded) {
         [void]$UpdatesToInstall.Add($_)
     }
 }
@@ -31,7 +31,7 @@ Write-Host -Object 'Installing Drivers...'  -ForegroundColor Green
 $Installer = $UpdateSession.CreateUpdateInstaller()
 $Installer.Updates = $UpdatesToInstall
 $InstallationResult = $Installer.Install()
-if($InstallationResult.RebootRequired){
+if ($InstallationResult.RebootRequired) {
     Write-Host -Object 'Reboot required! please reboot now..' -ForegroundColor Red
 }
 else {
