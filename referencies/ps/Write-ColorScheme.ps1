@@ -6,12 +6,13 @@ if (-not $output) {
     $noOutput = $true
 }
 
-(0..15) | % {
+(0..15) | ForEach-Object {
     $fg = $_
-    (0..15) | % {
+    (0..15) | ForEach-Object {
         if ($noOutput) {
             $output = "{0} {1}" -f $fg.ToString("00"), $_.ToString("00")
         }
         Write-Host -ForegroundColor $fg -BackgroundColor $_ -NoNewline " $output "
     }
-    Write-Host }
+    Write-Host 
+}

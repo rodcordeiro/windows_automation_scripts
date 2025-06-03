@@ -26,18 +26,19 @@ try {
 	$ForegroundColor = "000000"
 	$BackgroundColor = "ffffff"
 	$FileFormat = "jpg"
-	$PathToRepo = "$PSScriptRoot/.."
+	$PathToRepo = "$PSScriptRoot/../.."
 	$NewFile = "$PathToRepo/Data/qrcode.jpg"
 
 	$WebClient = new-object System.Net.WebClient
-	$WebClient.DownloadFile(("http://api.qrserver.com/v1/create-qr-code/?data=" + $Text + "&ecc=" + $ECC +`
-		"&size=" + $ImageSize + "&qzone=" + $QuietZone + `
-		"&color=" + $ForegroundColor + "&bgcolor=" + $BackgroundColor.Text + `
-		"&format=" + $FileFormat), $NewFile)
+	$WebClient.DownloadFile(("http://api.qrserver.com/v1/create-qr-code/?data=" + $Text + "&ecc=" + $ECC + `
+				"&size=" + $ImageSize + "&qzone=" + $QuietZone + `
+				"&color=" + $ForegroundColor + "&bgcolor=" + $BackgroundColor.Text + `
+				"&format=" + $FileFormat), $NewFile)
 
-	"✔️ new QR code image file written to: $NewFile"
+	"new QR code image file written to: $NewFile"
 	exit 0 # success
-} catch {
-	"⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
+}
+catch {
+	"Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
 	exit 1
 }
