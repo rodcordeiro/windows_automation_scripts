@@ -36,8 +36,8 @@ class student : person {
 
 
 $teacher = [teacher]::New()
-$teacher.SetName("Rodrigo Cordeiro")
-# $teacher
+$teacher.SetName("Mr. Rodrigo","Cordeiro")
+$teacher
 
 $student1 = [student]::new()
 $student1.SetName("Rodrigo Cordeiro")

@@ -3,7 +3,7 @@
 
 $token = $env:PAT
 
-$url="https://dev.azure.com/pdasolucoes/Projetos/_apis/git/pullrequests?api-version=6.0"
+$url="https://dev.azure.com/lojastorra/Engenharia_Arquitetura/_apis/git/pullrequests?api-version=6.0"
 
 
 $Header = @{
@@ -14,4 +14,4 @@ $Header = @{
 
 
 $response = Invoke-RestMethod -Uri $url -Headers $Header -Method GET -ContentType application/json-patch+json
-$response
+$response.value | Where-Object { $_.status -eq 'active'}
